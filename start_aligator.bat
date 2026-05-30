@@ -9,7 +9,7 @@ call npm install --silent
 
 echo.
 echo 2. Ініціалізація бази даних...
-call node src/db/init.js
+call node src/db/seed.js
 
 echo.
 echo 3. Запуск сервера...
