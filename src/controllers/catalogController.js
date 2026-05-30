@@ -106,6 +106,7 @@ exports.getSpecialists = (req, res) => {
     const db = getDb();
     db.all("SELECT * FROM specialists", [], (err, rows) => {
         db.close();
+        if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
     });
 };
@@ -128,6 +129,7 @@ exports.updateSpecialist = (req, res) => {
     
     db.run("UPDATE specialists SET specializaciya = ? WHERE id = ?", [specializaciya, id], function(err) {
         db.close();
+        if (err) return res.status(500).json({ error: err.message });
         res.json({ message: 'Спеціаліста оновлено', specializaciya });
     });
 };

@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 // Створення або підключення до файлу БД
 const dbPath = path.resolve(__dirname, '../../database.sqlite');
@@ -104,9 +105,12 @@ db.serialize(() => {
                 db.serialize(() => {
                     db.run(`INSERT INTO categories (nazva, opys) VALUES ('Аквапарк', 'Басейни та гірки'), ('Фітнес', 'Групові заняття')`);
                     
+                    const adminPassHash = bcrypt.hashSync('hashed_pass_1', 10);
+                    const clientPassHash = bcrypt.hashSync('hashed_pass_2', 10);
+
                     db.run(`INSERT INTO users (prizvyshche, imya, email, telefon, parol_hash, rol) VALUES 
-                        ('Адміненко', 'Іван', 'admin@aligator.com', '0501234567', 'hashed_pass_1', 'адмін'),
-                        ('Петренко', 'Анна', 'anna@mail.com', '0971234567', 'hashed_pass_2', 'клієнт')`);
+                        ('Адміненко', 'Іван', 'admin@aligator.com', '0501234567', '${adminPassHash}', 'адмін'),
+                        ('Петренко', 'Анна', 'anna@mail.com', '0971234567', '${clientPassHash}', 'клієнт')`);
                     
                     db.run(`INSERT INTO services (category_id, nazva, opys, tryvalist_hv, cina) VALUES (2, 'Зумба', 'Кардіо тренування', 60, 250.00)`);
                     

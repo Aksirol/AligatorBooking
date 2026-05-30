@@ -130,10 +130,43 @@
                 </div>
             
             <div id="admin-schedule" class="admin-tab-content hidden">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3>Створити новий слот розкладу</h3>
+                    <form id="admin-add-slot-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <select id="add-slot-service" required><option value="">Оберіть послугу...</option></select>
+                        <select id="add-slot-spec" required><option value="">Оберіть спеціаліста...</option></select>
+                        <input type="date" id="add-slot-date" required>
+                        <input type="number" id="add-slot-capacity" placeholder="Місткість слоту" required min="1">
+                        <input type="time" id="add-slot-start" required title="Час початку">
+                        <input type="time" id="add-slot-end" required title="Час завершення">
+                        <button type="submit" class="btn-primary" style="grid-column: 1 / -1;">Додати в розклад</button>
+                    </form>
                 </div>
-            
+                <div id="admin-schedule-list"></div>
+            </div>
+
             <div id="admin-catalog" class="admin-tab-content hidden">
+                <div class="grid-container">
+                    <div class="stat-card" style="text-align: left;">
+                        <h3>Створити категорію</h3>
+                        <form id="admin-add-category-form">
+                            <input type="text" id="add-cat-name" placeholder="Назва категорії" required>
+                            <input type="text" id="add-cat-desc" placeholder="Опис (необов'язково)">
+                            <button type="submit" class="btn-secondary" style="width: 100%;">Зберегти</button>
+                        </form>
+                    </div>
+                    <div class="stat-card" style="text-align: left;">
+                        <h3>Створити послугу</h3>
+                        <form id="admin-add-service-form">
+                            <select id="add-srv-cat" required><option value="">Оберіть категорію...</option></select>
+                            <input type="text" id="add-srv-name" placeholder="Назва послуги" required>
+                            <input type="number" id="add-srv-dur" placeholder="Тривалість (хвилин)" required>
+                            <input type="number" id="add-srv-price" placeholder="Вартість (грн)" required>
+                            <button type="submit" class="btn-secondary" style="width: 100%;">Зберегти</button>
+                        </form>
+                    </div>
                 </div>
+            </div>
 
             <div id="admin-users" class="admin-tab-content hidden">
                 <input type="text" id="admin-user-search" placeholder="Пошук клієнта (Ім'я або Email)...">

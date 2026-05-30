@@ -62,11 +62,7 @@ const login = (req, res) => {
             return res.status(401).json({ error: 'Невірний логін або пароль' });
         }
 
-        // Тест-кейс №7: Невірний пароль
-        const isMatch = await bcrypt.hash(parol, 10).then(hash => bcrypt.compare(parol, user.parol_hash)); 
-        // Примітка: bcrypt.compare робить це простіше, але тут ми використовуємо його напряму
         const validPass = await bcrypt.compare(parol, user.parol_hash);
-        
         if (!validPass) {
             return res.status(401).json({ error: 'Невірний логін або пароль' });
         }

@@ -579,7 +579,8 @@ function initAdmin() {
 function loadAdminData(tabId) {
     if (tabId === 'admin-bookings') loadAdminBookings();
     if (tabId === 'admin-users') loadAdminUsers();
-    // Логіка для 'admin-catalog' та 'admin-schedule' може бути додана за аналогією
+    if (tabId === 'admin-catalog') loadAdminCatalogUi();
+    if (tabId === 'admin-schedule') loadAdminScheduleUi();
 }
 
 // [A5] Завантаження статистики дашборду (Тест 4)
@@ -751,3 +752,105 @@ async function updateAdminBookingStatus(bookingId, newStatus) {
         showNotification(error.message, true);
     }
 }
+
+// Завантаження UI Каталогу для Адміна
+async function loadAdminCatalogUi() {
+    try {
+        const catRes = await fetch(`${API_BASE}/catalog/categories`);
+        const categories = await catRes.json();
+        
+        const catSelect = document.getElementById('add-srv-cat');
+        catSelect.innerHTML = '<option value="">Оберіть категорію...</option>';
+        categories.forEach(c => {
+            catSelect.innerHTML += `<option value="${c.id}">${c.nazva}</option>`;
+        });
+    } catch (e) { console.error(e); }
+}
+
+// Завантаження UI Розкладу для Адміна
+async function loadAdminScheduleUi() {
+    try {
+        const [srvRes, specRes, slotsRes] = await Promise.all([
+            fetch(`${API_BASE}/catalog/services`),
+            fetch(`${API_BASE}/catalog/specialists`),
+            fetch(`${API_BASE}/schedule`)
+        ]);
+        
+        const services = await srvRes.json();
+        const specialists = await specRes.json();
+        const slots = await slotsRes.json();
+        
+        // Заповнення селектів
+        const srvSelect = document.getElementById('add-slot-service');
+        srvSelect.innerHTML = '<option value="">Оберіть послугу...</option>';
+        services.forEach(s => srvSelect.innerHTML += `<option value="${s.id}">${s.nazva}</option>`);
+        
+        const specSelect = document.getElementById('add-slot-spec');
+        specSelect.innerHTML = '<option value="">Оберіть спеціаліста...</option>';
+        specialists.forEach(s => specSelect.innerHTML += `<option value="${s.id}">${s.prizvyshche} ${s.imya}</option>`);
+
+        // Відмальовка наявних слотів
+        let html = '<table class="data-table"><thead><tr><th>Дата і Час</th><th>Послуга</th><th>Місця</th></tr></thead><tbody>';
+        slots.forEach(slot => {
+            html += `<tr>
+                <td>${slot.data} <br> <small>${slot.chas_poch} - ${slot.chas_kin}</small></td>
+                <td>${slot.service_name}</td>
+                <td>${slot.vilni_miscya} / ${slot.maks_misc}</td>
+            </tr>`;
+        });
+        document.getElementById('admin-schedule-list').innerHTML = html + '</tbody></table>';
+
+    } catch (e) { console.error(e); }
+}
+
+// --- Обробники подання форм ---
+document.getElementById('admin-add-category-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    await fetch(`${API_BASE}/catalog/categories`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ nazva: document.getElementById('add-cat-name').value, opys: document.getElementById('add-cat-desc').value })
+    });
+    showNotification('Категорію створено!');
+    e.target.reset();
+    loadAdminCatalogUi();
+});
+
+document.getElementById('admin-add-service-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    await fetch(`${API_BASE}/catalog/services`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ 
+            category_id: document.getElementById('add-srv-cat').value,
+            nazva: document.getElementById('add-srv-name').value,
+            tryvalist_hv: document.getElementById('add-srv-dur').value,
+            cina: document.getElementById('add-srv-price').value
+        })
+    });
+    showNotification('Послугу додано!');
+    e.target.reset();
+});
+
+document.getElementById('admin-add-slot-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    await fetch(`${API_BASE}/schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ 
+            service_id: document.getElementById('add-slot-service').value,
+            specialist_id: document.getElementById('add-slot-spec').value,
+            data: document.getElementById('add-slot-date').value,
+            chas_poch: document.getElementById('add-slot-start').value,
+            chas_kin: document.getElementById('add-slot-end').value,
+            maks_misc: document.getElementById('add-slot-capacity').value,
+            status: 'відкритий'
+        })
+    });
+    showNotification('Слот додано в розклад!');
+    e.target.reset();
+    loadAdminScheduleUi(); // Оновлюємо таблицю
+});
