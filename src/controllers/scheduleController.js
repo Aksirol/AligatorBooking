@@ -2,14 +2,15 @@ const getDb = require('../db/database');
 
 // Клієнт та Адмін: Отримання розкладу (з розрахунком вільних місць)
 exports.getSlots = (req, res) => {
-    const { date, serviceId } = req.query; // Можливість фільтрації розкладу
+    const { date, serviceId } = req.query; 
     const db = getDb();
 
+    // ВИПРАВЛЕННЯ: Використовуємо NOT IN для кирилиці замість LOWER()
     let query = `
         SELECT sl.id, sl.data, sl.chas_poch, sl.chas_kin, sl.maks_misc, sl.status,
                srv.nazva AS service_name, srv.tryvalist_hv, srv.cina,
                sp.prizvyshche AS spec_prizvyshche, sp.imya AS spec_imya,
-               (sl.maks_misc - (SELECT COUNT(*) FROM bookings b WHERE b.slot_id = sl.id AND b.status = 'підтверджено')) AS vilni_miscya
+               (sl.maks_misc - (SELECT COUNT(*) FROM bookings b WHERE b.slot_id = sl.id AND b.status NOT IN ('Скасовано', 'скасовано'))) AS vilni_miscya
         FROM slots sl
         JOIN services srv ON sl.service_id = srv.id
         LEFT JOIN specialists sp ON sl.specialist_id = sp.id
