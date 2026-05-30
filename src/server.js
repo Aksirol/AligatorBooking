@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
-const catalogRoutes = require('./routes/catalogRoutes'); // Додано
+const catalogRoutes = require('./routes/catalogRoutes');
+const scheduleRoutes = require('./routes/scheduleRoutes'); // Додано
 
 const app = express();
 
@@ -10,7 +11,8 @@ app.use(express.json());
 
 // Підключення маршрутів
 app.use('/api/auth', authRoutes);
-app.use('/api/catalog', catalogRoutes); // Додано
+app.use('/api/catalog', catalogRoutes);
+app.use('/api/schedule', scheduleRoutes); // Додано
 
 if (require.main === module) {
     const PORT = 3000;
