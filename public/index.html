@@ -3,24 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Алігатор.Запис - Головна</title>
+    <title>Алігатор.Запис</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header>
-        <nav>
-            <ul id="main-menu">
-                <li><a href="#home" class="nav-link" data-target="home">Головна</a></li>
-                <li><a href="#catalog" class="nav-link" data-target="catalog">Каталог</a></li>
-                <li><a href="#login" class="nav-link" data-target="login">Вхід</a></li>
+        <nav class="navbar">
+            <div class="logo">Алігатор.Запис</div>
+            <ul class="nav-links" id="main-menu">
+                <li><a href="#" data-target="home-view">Головна</a></li>
+                <li><a href="#" data-target="catalog-view">Каталог послуг</a></li>
+                <li id="nav-login"><a href="#" data-target="auth-view">Вхід / Реєстрація</a></li>
+                <li id="nav-profile" class="hidden"><a href="#" data-target="profile-view">Мій кабінет</a></li>
+                <li id="nav-admin" class="hidden"><a href="#" data-target="admin-view">Адмін-панель</a></li>
+                <li id="nav-logout" class="hidden"><a href="#" id="logout-btn">Вийти</a></li>
             </ul>
+            <div class="burger" id="burger-menu">
+                <span></span><span></span><span></span>
+            </div>
         </nav>
     </header>
 
     <main id="app-content">
-        <section id="home">
-            <h1>Вітаємо в системі Алігатор.Запис!</h1>
-            <p>Оберіть послугу з каталогу для бронювання.</p>
+        <div id="notification" class="hidden"></div>
+
+        <section id="home-view" class="view-section active">
+            <h1>Вітаємо в оздоровчому комплексі «Алігатор»</h1>
+            <p>Оберіть найкращі SPA-процедури, фітнес-заняття та відпочинок в аквапарку.</p>
+            <button class="btn-primary" onclick="document.querySelector('[data-target=\'catalog-view\']').click()">Перейти до каталогу</button>
+        </section>
+
+        <section id="catalog-view" class="view-section hidden">
+            <h2>Каталог послуг</h2>
+            <div class="filters">
+                <select id="category-filter">
+                    <option value="">Всі категорії</option>
+                    </select>
+            </div>
+            <div id="services-list" class="grid-container">
+                </div>
+
+            <div id="booking-modal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-btn" id="close-modal">&times;</span>
+                    <h3 id="modal-service-name">Назва послуги</h3>
+                    <div id="slots-container">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="auth-view" class="view-section hidden">
+            <div class="auth-container">
+                <h2>Вхід у систему</h2>
+                <form id="login-form">
+                    <input type="email" id="login-email" placeholder="Електронна пошта" required>
+                    <input type="password" id="login-password" placeholder="Пароль" required>
+                    <button type="submit" class="btn-primary">Увійти</button>
+                </form>
+                
+                <hr>
+                
+                <h2>Реєстрація</h2>
+                <form id="register-form">
+                    <input type="text" id="reg-prizvyshche" placeholder="Прізвище" required>
+                    <input type="text" id="reg-imya" placeholder="Ім'я" required>
+                    <input type="email" id="reg-email" placeholder="Електронна пошта" required>
+                    <input type="tel" id="reg-telefon" placeholder="Телефон">
+                    <input type="password" id="reg-password" placeholder="Пароль" required>
+                    <button type="submit" class="btn-secondary">Зареєструватися</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="profile-view" class="view-section hidden">
+            <h2>Мій кабінет</h2>
+            <div class="profile-details">
+                <h3>Особисті дані</h3>
+                <form id="profile-form">
+                    <input type="text" id="prof-prizvyshche" required>
+                    <input type="text" id="prof-imya" required>
+                    <input type="tel" id="prof-telefon">
+                    <button type="submit" class="btn-primary">Зберегти зміни</button>
+                </form>
+            </div>
+            <div class="my-bookings">
+                <h3>Мої записи</h3>
+                <table class="data-table" id="my-bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Дата та час</th>
+                            <th>Послуга</th>
+                            <th>Спеціаліст</th>
+                            <th>Статус</th>
+                            <th>Дія</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="admin-view" class="view-section hidden">
+            <h2>Панель адміністратора</h2>
+            
+            <div class="dashboard-stats grid-container">
+                <div class="stat-card">
+                    <h4>Нові клієнти (за тиждень)</h4>
+                    <p id="stat-new-clients">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Записи на сьогодні</h4>
+                    <p id="stat-today-bookings">0</p>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="btn-tab active" data-tab="admin-bookings">Черга записів</button>
+                <button class="btn-tab" data-tab="admin-schedule">Розклад (Слоти)</button>
+                <button class="btn-tab" data-tab="admin-catalog">Каталог</button>
+                <button class="btn-tab" data-tab="admin-users">Клієнти</button>
+            </div>
+
+            <div id="admin-bookings" class="admin-tab-content">
+                </div>
+            
+            <div id="admin-schedule" class="admin-tab-content hidden">
+                </div>
+            
+            <div id="admin-catalog" class="admin-tab-content hidden">
+                </div>
+
+            <div id="admin-users" class="admin-tab-content hidden">
+                <input type="text" id="admin-user-search" placeholder="Пошук клієнта (Ім'я або Email)...">
+                <div id="admin-users-list"></div>
+            </div>
         </section>
     </main>
 
