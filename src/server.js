@@ -1,16 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
+const catalogRoutes = require('./routes/catalogRoutes'); // Додано
 
 const app = express();
 
 app.use(cors());
-app.use(express.json()); // Для парсингу JSON у тілі запиту
+app.use(express.json());
 
 // Підключення маршрутів
 app.use('/api/auth', authRoutes);
+app.use('/api/catalog', catalogRoutes); // Додано
 
-// Запуск сервера, якщо файл запускається напряму (не через тести)
 if (require.main === module) {
     const PORT = 3000;
     app.listen(PORT, () => {
@@ -18,4 +19,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = app; // Експортуємо для тестів
+module.exports = app;
