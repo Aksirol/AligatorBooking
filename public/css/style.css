@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+nav ul {
+    list-style: none;
+    padding: 1rem;
+    background-color: #0056b3;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+#app-content {
+    padding: 20px;
+}
